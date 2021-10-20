@@ -1,4 +1,4 @@
-import { Signal } from '../../helpers/signal'
+import { Signal } from '../helpers/signal'
 import { floorPlanHandlers } from './handler'
 
 export class FloorPlan {

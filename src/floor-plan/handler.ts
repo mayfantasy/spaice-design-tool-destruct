@@ -1,4 +1,4 @@
-import { ISignalHanlder } from '../signal'
+import { ISignalHanlder } from '../../helpers/signal'
 import { FloorPlan } from './model'
 
 interface IFloorPlanHandlers {

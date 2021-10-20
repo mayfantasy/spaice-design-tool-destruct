@@ -1,26 +1,24 @@
-import React from 'react'
-import logo from './logo.svg'
-import './App.css'
-import { run } from './main'
+import { useSelector, useDispatch } from 'react-redux'
+import { ActionCreators } from 'redux-undo'
+import { floorPlanActionCreators, selectFloorPlanState } from './chapers/house/floor-plan/store'
 
 function App() {
-  run()
+  const floorPlanState = useSelector(selectFloorPlanState)
+  const dispatch = useDispatch()
   return (
     <div className="App">
-      {/* <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header> */}
+      <div>
+        <button onClick={() => dispatch(floorPlanActionCreators.increment())}>Add 1</button>
+        <button onClick={() => dispatch(floorPlanActionCreators.incrementByAmount(3))}>Add 3</button>
+        <button onClick={() => dispatch(floorPlanActionCreators.updateWallTransparency(0.2))}>updateWallTransparency</button>
+        <button onClick={() => dispatch(floorPlanActionCreators.todoRequest(1))}>Add 3</button>
+      </div>
+      <div>
+        <button onClick={() => dispatch(ActionCreators.undo())}>Undo</button>
+        <button onClick={() => dispatch(ActionCreators.redo())}>Redo</button>
+      </div>
+      <pre>{JSON.stringify(floorPlanState, null, 2)}</pre>
+      {/* <button onClick={() => dispatch(incrementAsync(Number(incrementAmount) || 0))}>Add Async</button> */}
     </div>
   )
 }

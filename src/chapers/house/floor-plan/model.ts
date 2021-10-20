@@ -1,4 +1,4 @@
-import { Signal } from '../helpers/signal'
+import { Signal, SignalQueue } from '../../../helpers/signal'
 import { floorPlanHandlers } from './handler'
 
 export class FloorPlan {
@@ -76,8 +76,9 @@ export class FloorPlan {
 
   // ====================
   // Actions
-  public action1(data1: string, data2: number): void {
-    this.uploadFloorPlanEvent.trigger(this, data1)
-    this.setFloorPlanImageTransparencyEvent.trigger(this, data2)
+  public action1(data1: string, data2: number, signalQueue: SignalQueue): void {
+    this.uploadFloorPlanEvent.trigger(this, data1, signalQueue)
+    this.setFloorPlanImageTransparencyEvent.trigger(this, data2, signalQueue)
+    console.log(signalQueue)
   }
 }

@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { StateWithHistory } from 'redux-undo'
-import { IStoreState } from '../../../store'
+import { IStoreState } from '../../../../store'
 import { FloorPlan } from './model'
 import { floorPlanReducer } from './reducer'
 import { IFloorPlanState } from './types'

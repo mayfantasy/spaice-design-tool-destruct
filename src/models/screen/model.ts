@@ -1,11 +1,11 @@
 import {
-  IGlobalUnitOfMeasurement,
+  EGlobalUnitOfMeasurement,
   I2dModeMainViewportHiddenRule,
   I3dModeMainViewportHiddenRule,
-  IViewMode,
-  I3dModeDisplayView,
-  I3dModeDrawingView,
-} from './types'
+  EViewMode,
+  E3dModeDisplayView,
+  E3dModeDrawingView,
+} from './type'
 
 export class ScreenConfig {
   // The current floor number the viewport
@@ -15,7 +15,7 @@ export class ScreenConfig {
   // Current main viewport mode
   //
   // Only chaper->house has 2D mode
-  mainViewportViewMode: IViewMode = '2D'
+  mainViewportViewMode: EViewMode = EViewMode.TWO_D
 
   mainViewportZoom: number = 1
 
@@ -24,7 +24,7 @@ export class ScreenConfig {
   propertyBoxSectionCollapsed = false
 
   // The global length unit
-  globalUnitOfMeasurement: IGlobalUnitOfMeasurement = 'mm'
+  globalUnitOfMeasurement: EGlobalUnitOfMeasurement = EGlobalUnitOfMeasurement.MM
 
   // The hide / show options when viewport mode is 2D
   mode2dMainViewportHiddenRule: I2dModeMainViewportHiddenRule = {
@@ -45,9 +45,9 @@ export class ScreenConfig {
 
   // In 3D mode, users can choose from what position
   // to view the scene
-  mode3dDisplayView: I3dModeDisplayView = 'perspective'
+  mode3dDisplayView: E3dModeDisplayView = E3dModeDisplayView.PERSPECTIVE
 
-  mode3dDrawingView: I3dModeDrawingView = 'wireframe_and_material'
+  mode3dDrawingView: E3dModeDrawingView = E3dModeDrawingView.WIREFRAME_AND_MATERIAL
   mode3dBirdViewOn = true
   mode3dSpaceSurveyingModeOn = false
 

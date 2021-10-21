@@ -1,12 +1,12 @@
 import { applyMiddleware, combineReducers, compose, createStore, Middleware, StoreEnhancer } from 'redux'
-import { FloorPlan } from '../chapers/house/floor-plan/model'
-import { floorPlanReducer } from '../chapers/house/floor-plan/reducer'
-import { floorPlanInitialState, floorPlanSlice } from '../chapers/house/floor-plan/store'
+import { FloorPlan } from '../models/chapers/house/floor-plan/model'
+import { floorPlanReducer } from '../models/chapers/house/floor-plan/reducer'
+import { floorPlanInitialState, floorPlanSlice } from '../models/chapers/house/floor-plan/store'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import createSagaMiddleware from 'redux-saga'
-import mySaga from '../chapers/house/floor-plan/saga'
+import mySaga from '../models/chapers/house/floor-plan/saga'
 import undoable, { StateWithHistory } from 'redux-undo'
-import { IFloorPlanState } from '../chapers/house/floor-plan/types'
+import { IFloorPlanState } from '../models/chapers/house/floor-plan/types'
 
 const reducer = combineReducers({
   floorPlanState: undoable(floorPlanSlice.reducer),

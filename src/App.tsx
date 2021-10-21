@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { ActionCreators } from 'redux-undo'
-import { floorPlanActionCreators, selectFloorPlanState } from './chapers/house/floor-plan/store'
+import { floorPlanActionCreators, selectFloorPlanState } from './models/chapers/house/floor-plan/store'
 
 function App() {
   const floorPlanState = useSelector(selectFloorPlanState)

@@ -1,5 +1,5 @@
 import { AxiosResponse } from 'axios'
-import { api } from '../../../helpers/api'
+import { api } from '../../../../helpers/api'
 import { IToDo } from './types'
 
 const fetchTodoRequest = async (id: number): Promise<IToDo> => {

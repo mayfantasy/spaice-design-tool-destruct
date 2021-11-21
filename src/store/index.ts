@@ -1,19 +1,25 @@
 import { applyMiddleware, combineReducers, compose, createStore, Middleware, StoreEnhancer } from 'redux'
-import { FloorPlan } from '../models/chapers/house/floor-plan/model'
-import { floorPlanReducer } from '../models/chapers/house/floor-plan/reducer'
-import { floorPlanInitialState, floorPlanSlice } from '../models/chapers/house/floor-plan/store'
+import { FloorPlan } from '../tool-models/chapers/house/floor-plan/model'
+import { floorPlanReducer } from '../tool-models/chapers/house/floor-plan/reducer'
+import { floorPlanInitialState, floorPlanSlice } from '../tool-models/chapers/house/floor-plan/store'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import createSagaMiddleware from 'redux-saga'
-import mySaga from '../models/chapers/house/floor-plan/saga'
-import undoable, { StateWithHistory } from 'redux-undo'
-import { IFloorPlanState } from '../models/chapers/house/floor-plan/types'
+import mySaga from '../tool-models/chapers/house/floor-plan/saga'
+import undoable, { ActionCreators, StateWithHistory } from 'redux-undo'
+import { IFloorPlanState } from '../tool-models/chapers/house/floor-plan/types'
+import { IEditorState } from '../components/editor/types'
+import { editorInitialState, editorSlice } from '../components/editor/store'
 
 const reducer = combineReducers({
   floorPlanState: undoable(floorPlanSlice.reducer),
+  editorState: undoable(editorSlice.reducer),
+  // <=== New reducers add to here
 })
 
 const initialState = {
   floorPlanState: floorPlanInitialState as any as StateWithHistory<IFloorPlanState>,
+  editorState: editorInitialState as any as StateWithHistory<IEditorState>,
+  // <=== New slice states add to here
 }
 
 export type IStoreState = typeof initialState
@@ -32,3 +38,6 @@ const configureStore = () => {
 }
 
 export const store = configureStore()
+
+export const undo = () => ActionCreators.undo()
+export const redo = () => ActionCreators.redo()

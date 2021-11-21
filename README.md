@@ -1,46 +1,77 @@
-# Getting Started with Create React App
+### Setup a store slice (take *editorSlice* for example)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+1. Create editor/reducer.ts
+```
+export const editorReducer = {
+  addBoxObject: (state: IEditorState, action: PayloadAction<IBoxState>) => {
+    state.currentObjects = [...state.currentObjects, action.payload]
+  },
+}
+```
 
-## Available Scripts
+2. Create editor/store.ts  
+    2.1. Create slice name  
+    ```
+    export const SPLICE_NAME = 'editor'
+    ```
+    2.2. Create initial state  
+    ```
+    export const editorInitialState: IEditorState = {
+      currentObjects: [],
+    }
+    ```
+    2.3. Create store slice  
+    ```
+    export const editorSlice = createSlice({
+      name: SPLICE_NAME,
+      initialState: editorInitialState,
+      reducers: editorReducer,
+    })
+    ```
+    2.4. Create store selector  
+    ```
+    export const selectEditorState = (state: IStoreState) => state.editorState
+    ```
+    2.5. Create action creators
+    ```
+    export const editorActionCreators = editorSlice.actions
+    ```
 
-In the project directory, you can run:
+3. Add to store.ts  
+    3.1. Add to reducer
+    ```
+    const reducer = combineReducers({
+      ...
+      editorState: undoable(editorSlice.reducer),
+      ...
+    })
+    ```
+    3.2 Add to initial state
+    ```
+    const initialState = {
+      ...
+      editorState: editorInitialState as any as StateWithHistory<IEditorState>,
+      ...
+    }
+    ```
 
-### `yarn start`
+### How to use the store  
+```
+export const Editor = () => {
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+  const currentObjects = useSelector(selectEditorState)
+  const dispatch = useDispatch()
+  
+  return (
+    <div>
+      ...
+    </div>
+  )
+}
+```
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
-
-### `yarn test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `yarn build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Store objects location in Redux after a move (undo-able)
+1. Detect mesh/group's moved position (world)
+2. Dispatch the position (world) to the store
+3. Control the transformer's position (local) by that stored mesh position  
+* Note: 1. Must make sure that Transformer's parent is scene, so that it's local position equals to the world's position. 2. The Transformer is the parent of the mesh/group

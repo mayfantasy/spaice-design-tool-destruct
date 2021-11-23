@@ -1,18 +1,18 @@
 import React, { useRef } from 'react'
 import * as THREE from 'three'
 
-import { IBoxState } from './types'
+import { ISphereState } from './types'
 
 import { IObjectControlProps } from '../types'
 import { TransformControlWrapper } from '../TransformControlWrapper'
 import { loadTextureMap } from '../helpers/texture.helper'
 
 interface IProps {
-  state: IBoxState
+  state: ISphereState
   objectControlProps: IObjectControlProps
 }
 
-export const Box = (props: IProps) => {
+export const Sphere = (props: IProps) => {
   const { state, objectControlProps } = props
 
   // ====================
@@ -28,7 +28,7 @@ export const Box = (props: IProps) => {
   return (
     <TransformControlWrapper
       geoRef={geoRef}
-      geometry={<boxGeometry ref={geoRef} args={[1, 1, 1]} />}
+      geometry={<sphereGeometry ref={geoRef} args={[0.5, 32, 16]} />}
       material={<meshPhongMaterial map={textureMap} shininess={100} />}
       objectControlProps={objectControlProps}
       object3DBasicProps={state}

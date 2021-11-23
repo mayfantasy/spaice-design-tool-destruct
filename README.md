@@ -1,3 +1,9 @@
+### Dataflow
+1. Component
+2. Component actions (code split)
+3. Store actions (actual dispatch)
+4. Reducer
+5. Common state modifiers (re-usable reducer functions)
 ### Setup a store slice (take *editorSlice* for example)
 
 1. Create editor/reducer.ts
@@ -75,3 +81,26 @@ export const Editor = () => {
 2. Dispatch the position (world) to the store
 3. Control the transformer's position (local) by that stored mesh position  
 * Note: 1. Must make sure that Transformer's parent is scene, so that it's local position equals to the world's position. 2. The Transformer is the parent of the mesh/group
+
+### Store objects scale in Redux after a move (undo-able)
+1. Detect mesh/group's current scale (world)
+2. Dispatch the scale (world) to the store
+3. Set world scale to wrappers: 1. transform control (selected state) 2. group (unselected state) (Has to make sure the wrappers' parent is scene)
+4. Set local scale to mash, most of time will be [1, 1, 1]
+
+### Add edges to a mesh  
+```
+const edges = useMemo(() => new THREE.EdgesGeometry(geoRef.current), [geoRef])
+```
+```
+<>
+  <mesh {...props}>
+    <boxGeometry ref={geoRef} args={[1, 1, 1]} />
+    <meshPhongMaterial map={texture} shininess={100} />
+  </mesh>
+
+  <lineSegments geometry={edges} renderOrder={100}>
+    <lineBasicMaterial color="white" />
+  </lineSegments>
+</>
+```

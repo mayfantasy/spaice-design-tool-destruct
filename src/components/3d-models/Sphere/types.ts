@@ -1,3 +1,3 @@
 import { IObjectBasicProps, IObjectType } from '../types'
 
-export interface IBoxState extends IObjectBasicProps {}
+export interface ISphereState extends IObjectBasicProps {}

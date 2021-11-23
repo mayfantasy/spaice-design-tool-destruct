@@ -8,6 +8,8 @@ import { Grid } from './Grid'
 import { Plane } from './Plane'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectEditorState } from '../editor/store'
+import { IObjectType } from './types'
+import { Sphere } from './Sphere'
 
 export const Canvas = () => {
   // =================
@@ -30,9 +32,27 @@ export const Canvas = () => {
       {/* Lights */}
       <Light castShadow />
 
-      {editorState.present.currentObjects.map((o) => (
-        <Box key={o.id} state={o} objectControlProps={{ orbit, dispatch }} />
-      ))}
+      {editorState.present.currentObjects.map((o) => {
+        if (o.objectType === IObjectType.BOX) {
+          return (
+            <Box
+              key={o.id}
+              state={o}
+              objectControlProps={{ orbit, dispatch, transformControlMode: editorState.present.currentTransformControlMode }}
+            />
+          )
+        } else if (o.objectType === IObjectType.SPHERE) {
+          return (
+            <Sphere
+              key={o.id}
+              state={o}
+              objectControlProps={{ orbit, dispatch, transformControlMode: editorState.present.currentTransformControlMode }}
+            />
+          )
+        } else {
+          return null
+        }
+      })}
 
       {/* A plane that can receive shadows */}
       <Plane />
@@ -41,7 +61,7 @@ export const Canvas = () => {
       <Grid />
 
       {/* Fog */}
-      <fog attach="fog" args={['#041830', 5, 10]} />
+      {/* <fog attach="fog" args={['#041830', 5, 10]} /> */}
 
       {/* Orbit control */}
       <OrbitControls ref={orbit} />

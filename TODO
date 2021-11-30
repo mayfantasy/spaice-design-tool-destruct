@@ -1,5 +1,7 @@
-- Modify Plane and Grid
+- Add walls and rooms to store
+- Calculate room from 4 walls
+- Wall adsorption (吸附)
+- Make wall a Polygon 6
+- Wall composition
 
-- Change light
-
-- Change material
+- Two viewport

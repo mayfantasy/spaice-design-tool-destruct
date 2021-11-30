@@ -9,16 +9,20 @@ import undoable, { ActionCreators, StateWithHistory } from 'redux-undo'
 import { IFloorPlanState } from '../tool-models/chapers/house/floor-plan/types'
 import { IEditorState } from '../components/editor/types'
 import { editorInitialState, editorSlice } from '../components/editor/store'
+import { editor2DInitialState, editor2DSlice } from '../components/editor-2d/store'
+import { IEditor2DState } from '../components/editor-2d/types'
 
 const reducer = combineReducers({
   floorPlanState: undoable(floorPlanSlice.reducer),
   editorState: undoable(editorSlice.reducer),
+  editor2DState: undoable(editor2DSlice.reducer),
   // <=== New reducers add to here
 })
 
 const initialState = {
   floorPlanState: floorPlanInitialState as any as StateWithHistory<IFloorPlanState>,
   editorState: editorInitialState as any as StateWithHistory<IEditorState>,
+  editor2DState: editor2DInitialState as any as StateWithHistory<IEditor2DState>,
   // <=== New slice states add to here
 }
 

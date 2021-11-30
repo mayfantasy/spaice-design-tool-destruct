@@ -5,6 +5,7 @@ import { Editor } from './components/editor'
 import { Toolbar } from './components/editor/ui-components/Toolbar'
 import { floorPlanActionCreators, selectFloorPlanState } from './tool-models/chapers/house/floor-plan/store'
 import './App.css'
+import { Editor2D } from './components/editor-2d/ui-components'
 
 const App = () => {
   // const floorPlanState = useSelector(selectFloorPlanState)
@@ -12,7 +13,11 @@ const App = () => {
 
   return (
     <div className="App">
-      <Editor />
+      {/* 3D Editor */}
+      {/* <Editor /> */}
+
+      {/* 2D Editor */}
+      <Editor2D />
     </div>
   )
 }

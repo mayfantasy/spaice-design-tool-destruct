@@ -38,11 +38,11 @@ function* detectAndSetWallIntersections(): Generator<StrictEffect, void> {
   }
 }
 
-function* detectAndSplitWallsByIntersections(): Generator<StrictEffect, void> {
+function* detectAndSplitWallsByIntersection(): Generator<StrictEffect, void> {
   yield put(editor2DActionCreators.splitWallsByWallIntersection())
 }
 
 export function* editor2DSaga() {
   yield takeEvery(editor2DSlice.actions.setWalls.type, detectAndSetWallIntersections)
-  yield takeEvery(editor2DSlice.actions.addNewWallIntersection.type, detectAndSplitWallsByIntersections)
+  yield takeEvery(editor2DSlice.actions.addNewWallIntersection.type, detectAndSplitWallsByIntersection)
 }

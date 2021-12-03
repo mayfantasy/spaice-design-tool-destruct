@@ -5,7 +5,7 @@ const GRID_SIZE = 20
 export const Grid = () => {
   return (
     <Layer>
-      {Array.apply(1, Array(Math.round(window.innerWidth / 2 / GRID_SIZE))).map((l, i) => (
+      {Array.apply(1, Array(Math.round(window.innerWidth / 2 / GRID_SIZE))).map((_, i) => (
         <>
           <Line
             key={i + 'x'}

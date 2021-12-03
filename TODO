@@ -1,5 +1,5 @@
 - Add walls and rooms to store
-- Calculate room from 4 walls
+- Calculate room from enclosed N walls
 - Wall adsorption (吸附)
 - Make wall a Polygon 6
 - Wall composition

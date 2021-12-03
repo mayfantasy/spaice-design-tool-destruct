@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux'
-import { findObjectById } from '../../helpers/utils'
+import { findObjectById } from '../../helpers/utils-3d'
 import { Canvas } from '../3d-models/Canvas'
 import { selectEditorState } from './store'
 import { DataInspector } from './ui-components/DataInspector'

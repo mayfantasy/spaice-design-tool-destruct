@@ -7,6 +7,8 @@ export const SPLICE_NAME = 'editor-2d'
 
 export const editor2DInitialState: IEditor2DState = {
   currentSelectedTool: null,
+  walls: [],
+  wallIntersections: [],
 }
 
 export const editor2DSlice = createSlice({

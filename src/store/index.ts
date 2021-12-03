@@ -11,6 +11,7 @@ import { IEditorState } from '../components/editor/types'
 import { editorInitialState, editorSlice } from '../components/editor/store'
 import { editor2DInitialState, editor2DSlice } from '../components/editor-2d/store'
 import { IEditor2DState } from '../components/editor-2d/types'
+import { rootSaga } from './saga'
 
 const reducer = combineReducers({
   floorPlanState: undoable(floorPlanSlice.reducer),
@@ -37,7 +38,7 @@ const configureStore = () => {
   const composedEnhancers: StoreEnhancer<any> = compose(...enhancers)
 
   const store = createStore(reducer, initialState, composedEnhancers)
-  sagaMiddleware.run(mySaga)
+  sagaMiddleware.run(rootSaga)
   return store
 }
 

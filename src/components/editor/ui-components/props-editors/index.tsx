@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux'
-import { findObjectById } from '../../../../helpers/utils'
+import { findObjectById } from '../../../../helpers/utils-3d'
 import { IObjectType, IObjectState } from '../../../3d-models/types'
 import { selectEditorState } from '../../store'
 import { BoxPropsEditor } from './BoxPropsEditor'

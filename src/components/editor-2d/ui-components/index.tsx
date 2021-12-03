@@ -1,22 +1,33 @@
 import { Stage, Layer, Line, Text } from 'react-konva'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { SideMenu } from '../../menu'
 import { useDispatch, useSelector } from 'react-redux'
 import { editor2DActionCreators, selectEditor2DState } from '../store'
-import { IEditor2DToolType } from '../types'
+import { IEditor2DToolType, IKonvaPoint, I2PointsLine, IPoint } from '../types'
 import { Grid } from '../../2d-models/Grid'
+import { haveIntersection, intersectionToWallIntersection, lineToWall, splitLinesByIntersection } from '../../../helpers/utils-2d'
+import { idGen, IObjectTypes, objectIdGen } from '../../../helpers/utils'
 
 const SCALE_STEP = 0.01
-const GRID_SIZE = 20
+const ACTIVE_COLOR = 'red'
+const DEFAULT_COLOR = 'black'
 
 export const Editor2D = () => {
   const [isDrawing, setIsDrawing] = useState(false)
 
   // =================
+  // Store State
+  const editor2DState = useSelector(selectEditor2DState)
+  const walls = editor2DState.present.walls
+  const wallIntersections = editor2DState.present.wallIntersections
+  const currentSelectedTool = editor2DState.present.currentSelectedTool
+
+  const dispatch = useDispatch()
+
+  // =================
   // Wall State
-  const [wallStartPoint, setWallStartPoint] = useState<[number, number] | null>(null)
-  const [wallEndPoint, setWallEndPoint] = useState<[number, number] | null>(null)
-  const [walls, setWalls] = useState<Array<[number, number, number, number]> | []>([])
+  const [wallStartPoint, setWallStartPoint] = useState<IPoint | null>(null)
+  const [wallEndPoint, setWallEndPoint] = useState<IPoint | null>(null)
 
   // =================
   // Scale
@@ -24,14 +35,7 @@ export const Editor2D = () => {
 
   // =================
   // Position
-  const [currentMousePosition, setCurrentMousePosition] = useState<{ x: number; y: number }>()
-
-  // =================
-  // Store State
-  const editor2DState = useSelector(selectEditor2DState)
-  const currentSelectedTool = editor2DState.present.currentSelectedTool
-
-  const dispatch = useDispatch()
+  const [currentMousePosition, setCurrentMousePosition] = useState<IKonvaPoint>()
 
   // =================
   // Handlers
@@ -46,7 +50,7 @@ export const Editor2D = () => {
     if (currentSelectedTool) {
       const stage = e.target.getStage()
       const pos = stage.getRelativePointerPosition()
-      setWallEndPoint([pos.x, pos.y])
+      setWallEndPoint({ id: objectIdGen(IObjectTypes.point_2d), def: [pos.x, pos.y] })
     }
   }
 
@@ -59,11 +63,11 @@ export const Editor2D = () => {
         // Wall
         if (!isDrawing) {
           setIsDrawing(true)
-          setWallStartPoint([pos.x, pos.y])
+          setWallStartPoint({ id: objectIdGen(IObjectTypes.point_2d), def: [pos.x, pos.y] })
         } else {
           if (wallStartPoint && wallEndPoint) {
-            const newLine = [...wallStartPoint, ...wallEndPoint] as [number, number, number, number]
-            setWalls([...walls, newLine])
+            const newLine: I2PointsLine = { id: objectIdGen(IObjectTypes.line_2d), def: [...wallStartPoint.def, ...wallEndPoint.def] }
+            dispatch(editor2DActionCreators.setWalls({ walls: [...walls, lineToWall(newLine)] }))
           }
 
           // Continue drawing from endpoint
@@ -73,15 +77,30 @@ export const Editor2D = () => {
         // Room
         if (!isDrawing) {
           setIsDrawing(true)
-          setWallStartPoint([pos.x, pos.y])
+          setWallStartPoint({ id: objectIdGen(IObjectTypes.point_2d), def: [pos.x, pos.y] })
         } else {
           if (wallStartPoint && wallEndPoint) {
-            const x1y1x2y1 = [...wallStartPoint, wallEndPoint[0], wallStartPoint[1]] as [number, number, number, number]
-            const x2y1x2y2 = [wallEndPoint[0], wallStartPoint[1], ...wallEndPoint] as [number, number, number, number]
-            const x2y2x1y2 = [...wallEndPoint, wallStartPoint[0], wallEndPoint[1]] as [number, number, number, number]
-            const x1y2x1y1 = [wallStartPoint[0], wallEndPoint[1], ...wallStartPoint] as [number, number, number, number]
-
-            setWalls([...walls, x1y1x2y1, x2y1x2y2, x2y2x1y2, x1y2x1y1])
+            const x1y1x2y1: I2PointsLine = {
+              id: objectIdGen(IObjectTypes.line_2d),
+              def: [...wallStartPoint.def, wallEndPoint.def[0], wallStartPoint.def[1]],
+            } as I2PointsLine
+            const x2y1x2y2: I2PointsLine = {
+              id: objectIdGen(IObjectTypes.line_2d),
+              def: [wallEndPoint.def[0], wallStartPoint.def[1], ...wallEndPoint.def],
+            } as I2PointsLine
+            const x2y2x1y2: I2PointsLine = {
+              id: objectIdGen(IObjectTypes.line_2d),
+              def: [...wallEndPoint.def, wallStartPoint.def[0], wallEndPoint.def[1]],
+            } as I2PointsLine
+            const x1y2x1y1: I2PointsLine = {
+              id: objectIdGen(IObjectTypes.line_2d),
+              def: [wallStartPoint.def[0], wallEndPoint.def[1], ...wallStartPoint.def],
+            } as I2PointsLine
+            dispatch(
+              editor2DActionCreators.setWalls({
+                walls: [...walls, lineToWall(x1y1x2y1), lineToWall(x2y1x2y2), lineToWall(x2y2x1y2), lineToWall(x1y2x1y1)],
+              }),
+            )
           }
 
           setIsDrawing(false)
@@ -162,12 +181,20 @@ export const Editor2D = () => {
           {currentMousePosition && (
             <Text text={JSON.stringify(currentMousePosition)} x={currentMousePosition.x + 10} y={currentMousePosition.y + 10} />
           )}
+          {wallIntersections.map((wallIntersection) => (
+            <Text
+              key={wallIntersection.id}
+              text={`[${wallIntersection.point.def[0].toFixed(4)}, ${wallIntersection.point.def[1].toFixed(4)}]`}
+              x={wallIntersection.point.def[0]}
+              y={wallIntersection.point.def[1]}
+            />
+          ))}
           <Text text="[0, 0]" x={0} y={0} />
           {/* <Text text="Just start drawing" x={window.innerWidth/2} y={window.innerHeight/2} /> */}
           {currentSelectedTool === IEditor2DToolType.WALL && wallStartPoint && wallEndPoint && (
             <Line
-              points={[...wallStartPoint, ...wallEndPoint]}
-              stroke="#df4b26"
+              points={[...wallStartPoint.def, ...wallEndPoint.def]}
+              stroke={ACTIVE_COLOR}
               strokeWidth={5}
               tension={0.5}
               lineCap="round"
@@ -178,8 +205,8 @@ export const Editor2D = () => {
           {currentSelectedTool === IEditor2DToolType.ROOM && wallStartPoint && wallEndPoint && (
             <>
               <Line
-                points={[...wallStartPoint, wallEndPoint[0], wallStartPoint[1]]}
-                stroke="#df4b26"
+                points={[...wallStartPoint.def, wallEndPoint.def[0], wallStartPoint.def[1]]}
+                stroke={ACTIVE_COLOR}
                 strokeWidth={5}
                 tension={0.5}
                 lineCap="round"
@@ -187,8 +214,8 @@ export const Editor2D = () => {
                 globalCompositeOperation="source-over"
               />
               <Line
-                points={[wallEndPoint[0], wallStartPoint[1], ...wallEndPoint]}
-                stroke="#df4b26"
+                points={[wallEndPoint.def[0], wallStartPoint.def[1], ...wallEndPoint.def]}
+                stroke={ACTIVE_COLOR}
                 strokeWidth={5}
                 tension={0.5}
                 lineCap="round"
@@ -196,8 +223,8 @@ export const Editor2D = () => {
                 globalCompositeOperation="source-over"
               />
               <Line
-                points={[...wallEndPoint, wallStartPoint[0], wallEndPoint[1]]}
-                stroke="#df4b26"
+                points={[...wallEndPoint.def, wallStartPoint.def[0], wallEndPoint.def[1]]}
+                stroke={ACTIVE_COLOR}
                 strokeWidth={5}
                 tension={0.5}
                 lineCap="round"
@@ -205,8 +232,8 @@ export const Editor2D = () => {
                 globalCompositeOperation="source-over"
               />
               <Line
-                points={[wallStartPoint[0], wallEndPoint[1], ...wallStartPoint]}
-                stroke="#df4b26"
+                points={[wallStartPoint.def[0], wallEndPoint.def[1], ...wallStartPoint.def]}
+                stroke={ACTIVE_COLOR}
                 strokeWidth={5}
                 tension={0.5}
                 lineCap="round"
@@ -215,11 +242,17 @@ export const Editor2D = () => {
               />
             </>
           )}
-          {walls.map((l, i) => (
+          <Text text={wallIntersections.length.toFixed(1)} x={50} y={50} />
+          {/* Walls */}
+          {walls.map((l) => (
             <Line
-              key={i}
-              points={l}
-              stroke="black"
+              onMouseEnter={(e) => {
+                e.target.attrs.stroke = ACTIVE_COLOR
+              }}
+              onMouseLeave={(e) => (e.target.attrs.stroke = DEFAULT_COLOR)}
+              key={l.id}
+              points={l.line.def}
+              stroke={DEFAULT_COLOR}
               strokeWidth={5}
               tension={0.5}
               lineCap="round"

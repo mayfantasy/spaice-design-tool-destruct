@@ -1,6 +1,6 @@
 import { createAction, PayloadAction } from '@reduxjs/toolkit'
 import { Reducer } from 'react'
-import { findObjectById, findObjectByIdAndReplaceProperty, setPropertyForAllObjects } from '../../helpers/utils'
+import { findObjectById, findObjectByIdAndReplaceProperty, setPropertyForAllObjects } from '../../helpers/utils-3d'
 import { IBoxState } from '../3d-models/Box/types'
 import { ISphereState } from '../3d-models/Sphere/types'
 import { IObjectType, IObjectState, ITransformControlMode, ITransformValue, IObjectTexture } from '../3d-models/types'

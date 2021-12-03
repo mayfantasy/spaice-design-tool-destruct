@@ -104,3 +104,10 @@ const edges = useMemo(() => new THREE.EdgesGeometry(geoRef.current), [geoRef])
   </lineSegments>
 </>
 ```
+
+============== 2D =============  
+
+- Grid implementation
+- Intersection
+- Split 2 walls by intersection
+

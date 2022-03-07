@@ -28,8 +28,8 @@ export const Box = (props: IProps) => {
   return (
     <TransformControlWrapper
       geoRef={geoRef}
-      geometry={<boxGeometry ref={geoRef} args={[1, 1, 1]} />}
-      material={<meshPhongMaterial map={textureMap} shininess={100} />}
+      geometry={(<boxGeometry ref={geoRef} args={[1, 1, 1]} />) as any}
+      material={(<meshPhongMaterial map={textureMap} shininess={100} />) as any}
       objectControlProps={objectControlProps}
       object3DBasicProps={state}
     />

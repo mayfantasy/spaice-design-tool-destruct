@@ -28,8 +28,8 @@ export const Sphere = (props: IProps) => {
   return (
     <TransformControlWrapper
       geoRef={geoRef}
-      geometry={<sphereGeometry ref={geoRef} args={[0.5, 32, 16]} />}
-      material={<meshPhongMaterial map={textureMap} shininess={100} />}
+      geometry={(<sphereGeometry ref={geoRef} args={[0.5, 32, 16]} />) as any}
+      material={(<meshPhongMaterial map={textureMap} shininess={100} />) as any}
       objectControlProps={objectControlProps}
       object3DBasicProps={state}
     />

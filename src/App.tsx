@@ -14,10 +14,10 @@ const App = () => {
   return (
     <div className="App">
       {/* 3D Editor */}
-      {/* <Editor /> */}
+      <Editor />
 
       {/* 2D Editor */}
-      <Editor2D />
+      {/* <Editor2D /> */}
     </div>
   )
 }
